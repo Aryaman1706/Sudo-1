@@ -2,12 +2,18 @@ import { useEffect, useRef, useReducer } from "react";
 import { MonacoBinding } from "./y-monaco";
 import { makeStyles } from "@material-ui/core";
 
-
 const useStyles = makeStyles({
-    .show
-})
+  show: {
+    display: "block",
+  },
+  hide: {
+    display: "none",
+  },
+});
 
 const CodeEditor = ({ monaco, YDoc, awareness }) => {
+  const classes = useStyles();
+
   const bReducer = (state, action) => {
     switch (action.type) {
       case "SET_BINDING":
@@ -74,9 +80,14 @@ const CodeEditor = ({ monaco, YDoc, awareness }) => {
       });
 
       eDispatch({ type: "SET_EDITOR", payload: editor });
-      bindText(addFile("testing"));
     }
   }, []);
+
+  useEffect(() => {
+    if (eState.editor) {
+      bindText(addFile("testing"));
+    }
+  }, [eState]);
 
   return (
     <>
