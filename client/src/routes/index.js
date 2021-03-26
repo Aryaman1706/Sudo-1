@@ -14,6 +14,8 @@ import LearningPathDetail from "../pages/LearningPathDetail";
 import Login from "../pages/Login";
 import Articles from "../pages/Articles";
 import SearchUser from "../pages/SearchUser";
+import Monaco from "../components/CRDTRoom/Monaco";
+import { Route as RRoute } from "react-router-dom";
 
 const Routes = () => {
   return (
@@ -52,6 +54,8 @@ const Routes = () => {
           isPrivate
         />
         <Route exact path="/users" component={SearchUser} isPrivate />
+
+        <RRoute exact path="/crdt_room/:roomName" component={Monaco} />
       </Switch>
     </div>
   );
