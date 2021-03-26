@@ -122,7 +122,7 @@ router.get("/view/:id", [isAuthenticated], async (req, res) => {
     const video = await Video.findById(req.params.id)
       .populate({
         path: "postedBy",
-        select: "name photo email",
+        select: "displayName avatar_url",
       })
       .exec();
     video.views++;

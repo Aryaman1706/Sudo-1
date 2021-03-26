@@ -14,6 +14,9 @@ import LearningPathDetail from "../pages/LearningPathDetail";
 import Login from "../pages/Login";
 import Articles from "../pages/Articles";
 import SearchUser from "../pages/SearchUser";
+import Sessions from "../pages/Sessions";
+import { Route as RRoute } from "react-router-dom";
+import View from "../pages/View";
 
 const Routes = () => {
   return (
@@ -51,6 +54,8 @@ const Routes = () => {
           component={LearningPathDetail}
           isPrivate
         />
+        <Route exact path="/sessions" component={Sessions} isPrivate />
+        <Route exact path="/view/:id" component={View} isPrivate />
         <Route exact path="/users" component={SearchUser} isPrivate />
       </Switch>
     </div>
