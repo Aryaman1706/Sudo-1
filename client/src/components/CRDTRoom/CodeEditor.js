@@ -1,97 +1,75 @@
-import { useEffect, useRef, useReducer } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MonacoBinding } from "./y-monaco";
-import { makeStyles } from "@material-ui/core";
-
-const useStyles = makeStyles({
-  show: {
-    display: "block",
-  },
-  hide: {
-    display: "none",
-  },
-});
 
 const CodeEditor = ({ monaco, YDoc, awareness }) => {
-  const classes = useStyles();
-
-  const bReducer = (state, action) => {
-    switch (action.type) {
-      case "SET_BINDING":
-        return { binding: action.payload };
-      default:
-        throw new Error();
-    }
-  };
-  const [bState, bDispatch] = useReducer(bReducer, { binding: null });
-
-  const eReducer = (state, action) => {
-    switch (action.type) {
-      case "SET_EDITOR":
-        return { editor: action.payload };
-      default:
-        throw new Error();
-    }
-  };
-  const [eState, eDispatch] = useReducer(eReducer, { editor: null });
-
-  const fReducer = (state, action) => {
-    switch (action.type) {
-      case "SET_ACTIVE":
-        return { active_file: action.payload };
-      default:
-        throw new Error();
-    }
-  };
-  const [fState, fDispatch] = useReducer(fReducer, { active_file: null });
-
   const editorDiv = useRef(null);
+  const [editor, setEditor] = useState(null);
+  const [binding, setBinding] = useState(null);
+  const [activeFile, setActiveFile] = useState(null);
+  const [files, setFiles] = useState([]);
+  const [yMap, setMap] = useState(null);
+
+  const [newFile, setNewFile] = useState(null);
 
   const addFile = (name) => {
-    return YDoc.getText(name);
-  };
-
-  const bindText = (yText) => {
-    if (!bState.binding) {
-      new MonacoBinding(
-        yText,
-        eState.editor.getModel(),
-        new Set([eState.editor]),
-        awareness
-      );
-    } else {
-      bState.binding.destroy();
-
-      const newBinding = new MonacoBinding(
-        yText,
-        eState.editor.getModel(),
-        new Set([eState.editor]),
-        awareness
-      );
-      bDispatch({ type: "SET_BINDING", payload: newBinding });
-    }
+    const yText = YDoc.getText(name);
+    yMap.set(name, yText);
+    setFiles((prev) => [...prev, name]);
+    setActiveFile(name);
   };
 
   useEffect(() => {
-    if (!eState.editor) {
-      const editor = monaco.editor.create(editorDiv.current, {
+    if (!yMap) {
+      const newYmap = YDoc.getMap("files");
+      newYmap.observe();
+      setMap(newYmap);
+    }
+    if (!editor) {
+      const newEditor = monaco.editor.create(editorDiv.current, {
         value: "",
         language: "javascript",
         theme: "vs-dark",
       });
 
-      eDispatch({ type: "SET_EDITOR", payload: editor });
+      setEditor(newEditor);
     }
   }, []);
 
+  // useEffect(() => {
+  //   if (yMap) {
+  //     yMap.observe();
+  //   }
+  // }, [yMap]);
+
+  // useEffect(() => {
+  //   if (editor && !activeFile) {
+  //     addFile("index");
+  //   }
+  // }, [editor]);
+
   useEffect(() => {
-    if (eState.editor) {
-      bindText(addFile("testing"));
+    if (editor && activeFile && yMap && yMap.get(activeFile)) {
+      if (binding) {
+        binding.destroy();
+      }
+      const newBinding = new MonacoBinding(
+        yMap.get(activeFile),
+        editor.getModel(),
+        new Set([editor])
+      );
+
+      setBinding(newBinding);
     }
-  }, [eState]);
+  }, [activeFile]);
 
   return (
     <>
       <div ref={editorDiv} style={{ height: "300px", marginTop: "10px" }}></div>
+      <input value={newFile} onChange={(e) => setNewFile(e.target.value)} />
+      <button onClick={(e) => addFile(newFile)}>Create</button>
+      {files.map((t) => (
+        <p onClick={(e) => setActiveFile(t)}>{t}</p>
+      ))}
     </>
   );
 };

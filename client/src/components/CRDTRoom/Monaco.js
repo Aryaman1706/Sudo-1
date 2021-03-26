@@ -17,7 +17,7 @@ const Monaco = () => {
       setDoc(yDoc);
 
       const provider = new WebsocketProvider(
-        "ws://localhost:7000",
+        "ws://localhost:8000",
         roomName,
         yDoc
       );
