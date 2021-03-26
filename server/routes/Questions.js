@@ -42,7 +42,13 @@ router.get("/:id", async (req, res) => {
   const question = await Question.findById(questionId)
     .populate("tags")
     .populate("user")
-    .populate("comments")
+    .populate({
+      path: "comments",
+      populate: {
+        path: "user",
+        select: "displayName",
+      },
+    })
     .populate("answers.user");
   console.log(question);
   if (!question) return res.status(400).send({ error: "Invalid question id" });

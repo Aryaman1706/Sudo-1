@@ -93,6 +93,11 @@ const useStyles = makeStyles((theme) => ({
       outline: "none",
     },
   },
+  textField: {
+    "& input": {
+      color: "#fff",
+    },
+  },
 }));
 
 const EditorComponent = ({
@@ -170,6 +175,7 @@ const EditorComponent = ({
                 variant="outlined"
                 value={title}
                 label="Title"
+                className={classes.textField}
                 onChange={(e) => {
                   setTitle(e.target.value);
                 }}
@@ -179,6 +185,7 @@ const EditorComponent = ({
                 variant="outlined"
                 label="Description"
                 value={description}
+                className={classes.textField}
                 onChange={(e) => {
                   setDescription(e.target.value);
                 }}

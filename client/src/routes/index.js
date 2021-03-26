@@ -17,6 +17,7 @@ import SearchUser from "../pages/SearchUser";
 import Sessions from "../pages/Sessions";
 import { Route as RRoute } from "react-router-dom";
 import View from "../pages/View";
+import AddQuestion from "../pages/AddQuestion";
 
 const Routes = () => {
   return (
@@ -40,6 +41,12 @@ const Routes = () => {
         />
         <Route exact path="/forums" component={ForumExplore} isPrivate />
         <Route exact path="/forum/:id" component={Forum} isPrivate />
+        <Route
+          exact
+          path="/forums/add-question"
+          component={AddQuestion}
+          isPrivate
+        />
         <Route
           exact
           path="/coderoom/:roomId"
