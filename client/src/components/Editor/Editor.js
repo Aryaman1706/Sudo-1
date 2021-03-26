@@ -11,6 +11,7 @@ import {
   Modal,
   Paper,
   Select,
+  TextField,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import VisibilityIcon from "@material-ui/icons/Visibility";
@@ -22,9 +23,10 @@ import { debounce } from "lodash";
 import { useParams } from "react-router-dom";
 
 // -->
-import axios from "axios";
+import axios from "../../utils/axios";
 import ReconnectingWebSocket from "reconnecting-websocket";
 import sharedb from "sharedb/lib/client";
+import { useMutation } from "react-query";
 // import json1 from "ot-json1";
 // -->
 
@@ -98,36 +100,19 @@ const EditorComponent = ({
   mediaBlobUrl,
 }) => {
   // -->
-  const { id } = useParams();
   const [state, setState] = useState({ code: "State Code" });
-  const socket = useRef();
-  const connection = useRef();
-  useEffect(() => {
-    // socket.current = new ReconnectingWebSocket("ws://localhost:8080");
-    // connection.current = new sharedb.Connection(socket.current);
-    // const doc = connection.current.get("documents", "123");
-    // doc.subscribe((err) => {
-    //   console.log("sub", doc);
-    //   if (doc.data) {
-    //     setState(doc.data);
-    //     // dispatch(writeCode(doc.data.code));
-    //   }
-    // });
-    // doc.on("op", (op, source) => {
-    //   console.log("op", op);
-    //   // if (!source) {
-    //   setState({ code: doc.data.code });
-    //   // dispatch(writeCode(op));
-    //   // }
-    // });
-  }, []);
-  // -->
 
   const classes = useStyles();
   const [language, setLanguage] = useState("javascript");
   const dispatch = useDispatch();
   const code = useSelector((state) => state.code);
   const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const formData = new FormData();
+  const uploadVideo = useMutation((upload) =>
+    axios.post("/videos/upload", upload)
+  );
 
   const handleOpen = () => {
     setOpen(true);
@@ -141,17 +126,15 @@ const EditorComponent = ({
     console.log(e);
     console.log(value.length);
     setState({ code: value });
-    // ot
-    // debounce(dispatch(writeCode(value)), 3000);
-    // !!!!!!!
-    /*console.log({ prev: state.code, new: value });
-    connection.current
-      .get("documents", "123")
-      .submitOp([{ p: ["code"], od: state.code, oi: value }]);
-    setState({ code: value });
-    */
-    // !!!!!!!
-    // dispatch(writeCode(value));
+  };
+
+  const handleSubmit = async () => {
+    console.log(mediaBlobUrl, "blob");
+    let blob = await fetch(mediaBlobUrl).then((r) => r.blob());
+    formData.append("video", blob);
+    formData.append("title", title);
+    formData.append("description", description);
+    uploadVideo.mutate(formData);
   };
 
   const previewModal = () => {
@@ -180,6 +163,46 @@ const EditorComponent = ({
                 className={classes.video}
                 controls
               />
+              <br />
+              <TextField
+                variant="outlined"
+                value={title}
+                label="Title"
+                onChange={(e) => {
+                  setTitle(e.target.value);
+                }}
+              />
+              <br />
+              <TextField
+                variant="outlined"
+                label="Description"
+                value={description}
+                onChange={(e) => {
+                  setDescription(e.target.value);
+                }}
+              />
+              <br />
+              <br />
+              {uploadVideo.isLoading ? (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  onClick={handleSubmit}
+                  disabled
+                >
+                  Uploading
+                </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  onClick={handleSubmit}
+                >
+                  Upload
+                </Button>
+              )}
             </div>
           </Fade>
         </Modal>
