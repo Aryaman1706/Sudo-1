@@ -8,7 +8,7 @@ const port = process.env.PORT || 6000;
 
 app.get("/create", async (req, res) => {
   try {
-    const roomId = uuidV4();
+    const roomId = "1234";
     console.log(roomId);
 
     const container = spawn("docker", [
@@ -22,21 +22,20 @@ app.get("/create", async (req, res) => {
     ]);
 
     container.stdout.on("data", () => {
-      res.status(200).send("Started");
+      return res.status(200).send("Started");
     });
 
     container.on("error", () => {
       container.kill();
-      res.status(400).send("Error");
+      return res.status(400).send("Error");
     });
 
     container.on("exit", () => {
       container.kill();
-      res.status(400).send("Error");
     });
   } catch (error) {
     console.log(error);
-    res.status(500).send("Retry");
+    return res.status(500).send("Retry");
   }
 });
 

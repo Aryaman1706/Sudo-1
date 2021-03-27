@@ -1,13 +1,11 @@
-FROM node:lts-alpine3.13
-
-USER node
+FROM node:lts
 
 WORKDIR /pty
 
-COPY --chown=node:node ./pty .
+COPY  ./pty .
 
-RUN ["npm", "i"]
+RUN ["npm", "ci"]
 
-WORKDIR /home/app
+EXPOSE 8080
 
-CMD [ "node", "/pty/app.js" ]
+CMD [ "node", "app.js" ]
