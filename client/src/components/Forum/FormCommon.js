@@ -44,6 +44,7 @@ const UserCard = ({ user }) => (
 );
 const Comment = ({ comment }) => (
   <>
+    {console.log(comment)}
     <Grid item xs={12} style={{ marginTop: "1rem" }}>
       <Divider
         style={{
@@ -51,8 +52,13 @@ const Comment = ({ comment }) => (
         }}
       />
     </Grid>
-    <Grid item xs={12} style={{ marginTop: "0.8rem" }}>
-      {comment.data}
+    <Grid
+      item
+      xs={12}
+      style={{ marginTop: "0.8rem", display: "flex", flexDirection: "row" }}
+    >
+      <span>{comment.data}</span>
+      <span></span>
     </Grid>
   </>
 );
@@ -61,33 +67,36 @@ const PostComment = ({ postComment }) => {
   const [newCommentData, setNewCommentData] = useState("");
   return (
     <>
-      <input
-        value={newCommentData}
-        onChange={(e) => setNewCommentData(e.target.value)}
-        style={{
-          marginBottom: "10px",
-          display: "block",
-          width: "70%",
-          borderRadius: "5px",
-          lineHeight: "1.8em",
-          height: "30px",
-          backgroundColor: "transparent",
-          color: "white",
-          border: "1px solid #197fdd",
-          marginRight: "1rem",
-          marginTop: "0.5rem",
-        }}
-      />
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => {
-          postComment(newCommentData);
-          setNewCommentData("");
-        }}
-      >
-        Add Comment
-      </Button>
+      <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+        <input
+          value={newCommentData}
+          onChange={(e) => setNewCommentData(e.target.value)}
+          style={{
+            marginBottom: "10px",
+            display: "block",
+            flexGrow: 1,
+            alignSelf: "stretch",
+            borderRadius: "5px",
+            lineHeight: "1.8em",
+            height: "35px",
+            backgroundColor: "transparent",
+            color: "white",
+            border: "1px solid #197fdd",
+            marginRight: "1rem",
+            marginTop: "0.5rem",
+          }}
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            postComment(newCommentData);
+            setNewCommentData("");
+          }}
+        >
+          Add Comment
+        </Button>
+      </div>
     </>
   );
 };

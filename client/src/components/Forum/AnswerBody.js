@@ -94,7 +94,7 @@ const AnswerBody = ({ question, setQuestion, answer }) => {
             alignItems: "center",
             display: "flex",
             flexDirection: "row",
-            marginRight: "10%",
+            marginBottom: "3rem",
             marginTop: "50px",
           }}
         >

@@ -1,6 +1,13 @@
 const express = require("express");
 const isAuthenticated = require("../Middleware/isAuthenticated");
 const router = express.Router();
+const { v4: uuidv4 } = require("uuid");
+const fs = require("fs");
+const AWS = require("aws-sdk");
+const util = require("util");
+const multer = require("multer");
+
+const upload = multer({}).any();
 
 // * Models
 const Question = require("../models/Question");
@@ -16,6 +23,11 @@ const questionValidator = require("../utils/Validators/Question");
 //   });
 //   res.send(questions);
 // });
+
+const s3 = new AWS.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SECRET,
+});
 
 // * get all questions of a user
 router.get("/user", isAuthenticated, async (req, res) => {
@@ -42,7 +54,13 @@ router.get("/:id", async (req, res) => {
   const question = await Question.findById(questionId)
     .populate("tags")
     .populate("user")
-    .populate("comments")
+    .populate({
+      path: "comments",
+      populate: {
+        path: "user",
+        select: "displayName",
+      },
+    })
     .populate("answers.user");
   console.log(question);
   if (!question) return res.status(400).send({ error: "Invalid question id" });
@@ -50,20 +68,53 @@ router.get("/:id", async (req, res) => {
 });
 
 // * post new question
-router.post("/new", isAuthenticated, async (req, res) => {
-  const { value, error } = questionValidator.newQuestion(req.body);
+router.post("/new", [isAuthenticated, upload], async (req, res) => {
+  const body = { ...req.body, fileBlob: req.files };
+  const { value, error } = questionValidator.newQuestion(body);
+
   if (error)
     return res
       .status(400)
       .send({ message: error.details[0].message, error: "Invalid question" });
-  const question = new Question({
-    user: req.user._id,
-    title: value.title,
-    markdown: value.markdown,
-    tags: value.tags,
-  });
-  await question.save();
-  res.send(question);
+  if (!value.fileBlob) {
+    const question = new Question({
+      user: req.user._id,
+      title: value.title,
+      markdown: value.markdown,
+      // tags: value.tags,
+    });
+    question.save();
+    return res.send(question);
+  } else if (value.fileBlob) {
+    // const file = new File([value.fileBlob], `code-${uuidv4()}.txt`);
+    // const fileContent = fs.readFileSync(file);
+    const params = {
+      Bucket: process.env.AWS_BUCKET,
+      Key: `code-${uuidv4()}.txt`, // File name you want to save as in S3
+      Body: value.fileBlob[0].buffer,
+    };
+    s3.upload(params, function (err, data) {
+      if (err) {
+        throw err;
+      }
+      if (data) {
+        console.log(data, "data");
+        const fileObj = {
+          url: data.Location,
+          language: req.body.language,
+        };
+        const question = new Question({
+          user: req.user._id,
+          title: value.title,
+          markdown: value.markdown,
+          // tags: value.tags,
+          file: fileObj,
+        });
+        question.save();
+        return res.send(question);
+      }
+    });
+  }
 });
 
 // * update question

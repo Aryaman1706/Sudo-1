@@ -5,6 +5,7 @@ import CodeIcon from "@material-ui/icons/Code";
 import ForumIcon from "@material-ui/icons/Forum";
 import GestureIcon from "@material-ui/icons/Gesture";
 import ImportContactsIcon from "@material-ui/icons/ImportContacts";
+import VideoLibraryIcon from "@material-ui/icons/VideoLibrary";
 import { useHistory } from "react-router-dom";
 import { v4 as uuidV4 } from "uuid";
 
@@ -93,6 +94,17 @@ const SideNav = () => {
             <GestureIcon fontSize="large" />
           </span>
           <span className={classes.text}>Learning Paths</span>
+        </div>
+        <div
+          className={classes.flexRow}
+          onClick={() => {
+            history.push("/sessions");
+          }}
+        >
+          <span>
+            <VideoLibraryIcon fontSize="large" />
+          </span>
+          <span className={classes.text}>Sessions</span>
         </div>
       </div>
     </>

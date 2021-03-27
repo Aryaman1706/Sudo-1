@@ -11,6 +11,7 @@ import {
   Modal,
   Paper,
   Select,
+  Snackbar,
   TextField,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
@@ -21,6 +22,7 @@ import VideocamOffIcon from "@material-ui/icons/VideocamOff";
 import { ClearActiveFile, writeCode } from "../../redux/actions";
 import { debounce } from "lodash";
 import { useParams } from "react-router-dom";
+import Alert from "@material-ui/lab/Alert";
 
 // -->
 import axios from "../../utils/axios";
@@ -86,6 +88,11 @@ const useStyles = makeStyles((theme) => ({
     width: "1000px",
     "&:focus": {
       outline: "none",
+    },
+  },
+  textField: {
+    "& input": {
+      color: "#fff",
     },
   },
 }));
@@ -165,6 +172,7 @@ const EditorComponent = ({
                 variant="outlined"
                 value={title}
                 label="Title"
+                className={classes.textField}
                 onChange={(e) => {
                   setTitle(e.target.value);
                 }}
@@ -174,6 +182,7 @@ const EditorComponent = ({
                 variant="outlined"
                 label="Description"
                 value={description}
+                className={classes.textField}
                 onChange={(e) => {
                   setDescription(e.target.value);
                 }}
@@ -211,9 +220,23 @@ const EditorComponent = ({
     handleOpen();
   };
 
+  const [open2, setOpen2] = useState(true);
+
   return (
     <>
       {previewModal()}
+      {uploadVideo.status === "success" && (
+        <Snackbar
+          open={open2}
+          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+          handleClose={() => {
+            setOpen2(false);
+          }}
+          autoHideDuration={1000}
+        >
+          <Alert severity="success">Uploaded Successfully</Alert>
+        </Snackbar>
+      )}
       <div className={classes.container}>
         <div className={classes.languageContainer}>
           <div className={classes.subContainer}>

@@ -84,6 +84,16 @@ const questionSchema = new mongoose.Schema(
     //   default: 0,
     // },
     comments: [commentSchema],
+    file: {
+      url: {
+        type: String,
+        default: null,
+      },
+      language: {
+        type: String,
+        default: null,
+      },
+    },
     tags: [{ type: mongoose.Schema.Types.ObjectID, ref: "Tag" }],
     answers: [answerSchema],
   },

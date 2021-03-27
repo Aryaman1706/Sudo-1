@@ -15,6 +15,7 @@ import {
 import ForumExploreCard from "../components/ForumExploreCard/ForumExploreCard";
 import Layout from "../components/Layout/Layout";
 import axios from "../utils/axios";
+import { useHistory } from "react-router";
 const useStyles = makeStyles((theme) => ({
   paper: {
     position: "absolute",
@@ -33,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SimpleModal() {
   const classes = useStyles();
+  const history = useHistory();
   const [open, setOpen] = React.useState(false);
   const [focus, setFocus] = React.useState(true);
   const [questions, setQuestions] = useState([]);
@@ -186,7 +188,13 @@ export default function SimpleModal() {
           </h1>
         </Grid>
         <Grid item xs={6} style={{ textAlign: "right", margin: "auto" }}>
-          <Button variant="contained" size="large" onClick={handleOpen}>
+          <Button
+            variant="contained"
+            size="large"
+            onClick={() => {
+              history.push("/forums/add-question");
+            }}
+          >
             Ask a Question
           </Button>
         </Grid>

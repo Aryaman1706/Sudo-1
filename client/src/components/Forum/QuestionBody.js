@@ -106,8 +106,8 @@ const QuestionBody = ({ question, setQuestion, classes }) => {
               alignItems: "center",
               display: "flex",
               flexDirection: "row",
-              marginRight: "10%",
               marginTop: "50px",
+              marginBottom: "3rem",
             }}
           >
             <InfoCard
