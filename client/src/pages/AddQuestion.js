@@ -31,6 +31,9 @@ const useStyles = makeStyles(() => ({
     "& label": {
       color: "white",
     },
+    "& .MuiOutlinedInput-notchedOutline": {
+      borderColor: "#3f51b5",
+    },
   },
   select: {
     color: "#fff",

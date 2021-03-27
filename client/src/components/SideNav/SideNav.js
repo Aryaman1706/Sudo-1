@@ -4,6 +4,7 @@ import HomeIcon from "@material-ui/icons/Home";
 import CodeIcon from "@material-ui/icons/Code";
 import ForumIcon from "@material-ui/icons/Forum";
 import GestureIcon from "@material-ui/icons/Gesture";
+import PeopleIcon from "@material-ui/icons/People";
 import ImportContactsIcon from "@material-ui/icons/ImportContacts";
 import VideoLibraryIcon from "@material-ui/icons/VideoLibrary";
 import { useHistory } from "react-router-dom";
@@ -54,7 +55,7 @@ const SideNav = () => {
         <div
           className={classes.flexRow}
           onClick={() => {
-            history.push(`/coderoom/${uuidV4()}`);
+            history.push(`/create-room`);
           }}
         >
           <span>
@@ -105,6 +106,17 @@ const SideNav = () => {
             <VideoLibraryIcon fontSize="large" />
           </span>
           <span className={classes.text}>Sessions</span>
+        </div>
+        <div
+          className={classes.flexRow}
+          onClick={() => {
+            history.push(`/coderoom/${uuidV4()}`);
+          }}
+        >
+          <span>
+            <PeopleIcon fontSize="large" />
+          </span>
+          <span className={classes.text}>Start a session</span>
         </div>
       </div>
     </>
