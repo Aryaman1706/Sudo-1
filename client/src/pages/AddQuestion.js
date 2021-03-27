@@ -17,6 +17,7 @@ import Layout from "../components/Layout/Layout";
 import MDEditor from "@uiw/react-md-editor";
 import { ControlledEditor } from "@monaco-editor/react";
 import axios from "../utils/axios";
+import { v4 as uuidV4 } from "uuid";
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -81,14 +82,39 @@ const AddQuestion = () => {
     console.log(newQuestion);
     const tags = newQuestion.tags.map((t) => t._id);
     console.log(tags);
-    const { data } = await axios.post(
-      "/questions/new",
-      { ...newQuestion, tags },
-      {
+    if (!isCode) {
+      const { data } = await axios.post(
+        "/questions/new",
+        { ...newQuestion, tags },
+        {
+          withCredentials: true,
+        }
+      );
+      data.tags = newQuestion.tags;
+    } else if (isCode === true) {
+      const blob = new Blob([code], { type: "text/plain" });
+      console.log(blob, "blob");
+      const text = await new Response(blob).text();
+      console.log(text);
+      console.log(newQuestion, "question data");
+      const formData = new FormData();
+      formData.append("title", newQuestion.title);
+      formData.append("markdown", newQuestion.markdown);
+      //   formData.append("tags", JSON.stringify(newQuestion.tags));
+      //   const file = new File([blob], `code-${uuidV4()}.txt`);
+
+      formData.append("fileBlob", blob);
+      formData.append("language", language);
+      //   console.log(file, "file");
+
+      const { data } = await axios.post("/questions/new", formData, {
         withCredentials: true,
-      }
-    );
-    data.tags = newQuestion.tags;
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      data.tags = newQuestion.tags;
+    }
     setNewQuestion({
       title: "",
       markdown: `test MARKDOWN `,
