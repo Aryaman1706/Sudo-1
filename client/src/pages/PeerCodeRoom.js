@@ -49,7 +49,9 @@ const PeerCodeRoom = () => {
   const socket = useRef();
   const myPeer = useRef();
   useEffect(() => {
-    socket.current = io(ENDPOINT, {});
+    socket.current = io(ENDPOINT, {
+      path: `/${roomId}/`,
+    });
     // myPeer.current = new Peer(user._id);
 
     // myPeer.current.on("open", () => {

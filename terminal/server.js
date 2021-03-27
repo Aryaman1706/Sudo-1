@@ -6,10 +6,14 @@ const app = express();
 
 const port = process.env.PORT || 6000;
 
-app.get("/create", async (req, res) => {
+app.get("/create/:id", async (req, res) => {
   try {
-    const roomId = "1234";
+    const roomId = req.params.id;
     console.log(roomId);
+
+    if (!req.query.new) {
+      res.status(200).send("Started");
+    }
 
     const container = spawn("docker", [
       "run",
@@ -18,6 +22,8 @@ app.get("/create", async (req, res) => {
       `roomId=${roomId}`,
       "--env",
       `ROOM_ID=${roomId}`,
+      "-p",
+      "8080:8080",
       "terminal",
     ]);
 
