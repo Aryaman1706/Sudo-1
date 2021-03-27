@@ -44,21 +44,22 @@ const PeerCodeRoom = () => {
   } = useReactMediaRecorder({ screen: true, onStop: finishRecording });
 
   // // -->
-  const ENDPOINT = `${process.env.REACT_APP_SOCKET_SERVER}`;
+  // const ENDPOINT = `${process.env.REACT_APP_SOCKET_SERVER}`;
+  const ENDPOINT = "http://localhost:8080/pty";
   const socket = useRef();
   const myPeer = useRef();
   useEffect(() => {
-    socket.current = io(ENDPOINT);
-    myPeer.current = new Peer(user._id);
+    socket.current = io(ENDPOINT, {});
+    // myPeer.current = new Peer(user._id);
 
-    myPeer.current.on("open", () => {
-      socket.current.emit("joinRoom", roomId, user);
-    });
-    socket.current.on("roomJoined", (user) => {
-      setConnections((prev) => {
-        return [...prev, user];
-      });
-    });
+    // myPeer.current.on("open", () => {
+    //   socket.current.emit("joinRoom", roomId, user);
+    // });
+    // socket.current.on("roomJoined", (user) => {
+    //   setConnections((prev) => {
+    //     return [...prev, user];
+    //   });
+    // });
   }, []);
   // -->
 
@@ -103,7 +104,9 @@ const PeerCodeRoom = () => {
                 {/*Pass Socket*/}
               </Grid>
               <Grid item xs={12}>
-                <Terminal />
+                {socket.current && socket.current.connected ? (
+                  <Terminal socket={socket.current} />
+                ) : null}
               </Grid>
             </Grid>
           </Grid>

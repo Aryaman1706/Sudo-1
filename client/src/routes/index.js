@@ -14,8 +14,9 @@ import LearningPathDetail from "../pages/LearningPathDetail";
 import Login from "../pages/Login";
 import Articles from "../pages/Articles";
 import SearchUser from "../pages/SearchUser";
-import Sessions from "../pages/Sessions";
+import Monaco from "../components/CRDTRoom/Monaco";
 import { Route as RRoute } from "react-router-dom";
+import Sessions from "../pages/Sessions";
 import View from "../pages/View";
 import AddQuestion from "../pages/AddQuestion";
 
@@ -64,6 +65,8 @@ const Routes = () => {
         <Route exact path="/sessions" component={Sessions} isPrivate />
         <Route exact path="/view/:id" component={View} isPrivate />
         <Route exact path="/users" component={SearchUser} isPrivate />
+
+        <RRoute exact path="/crdt_room/:roomName" component={Monaco} />
       </Switch>
     </div>
   );

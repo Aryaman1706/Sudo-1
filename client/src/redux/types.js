@@ -6,3 +6,8 @@ export const WRITE_CODE = "WRITE_CODE";
 export const LOGIN_USER = "LOGIN_USER";
 export const LOGIN_ERROR = "LOGIN_ERROR";
 export const LOGOUT_USER = "LOGOUT_USER";
+
+// ! CRDT
+export const CRDT_SET_EDITOR = "CRDT_SET_EDITOR";
+export const CRDT_SET_BINDING = "CRDT_SET_BINDING";
+export const CRDT_SET_ACTIVE_FILE = "CRDT_SET_ACTIVE_FILE";

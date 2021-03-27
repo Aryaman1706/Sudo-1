@@ -26,10 +26,7 @@ import Alert from "@material-ui/lab/Alert";
 
 // -->
 import axios from "../../utils/axios";
-import ReconnectingWebSocket from "reconnecting-websocket";
-import sharedb from "sharedb/lib/client";
 import { useMutation } from "react-query";
-// import json1 from "ot-json1";
 // -->
 
 const useStyles = makeStyles((theme) => ({
@@ -107,7 +104,7 @@ const EditorComponent = ({
   mediaBlobUrl,
 }) => {
   // -->
-  const [state, setState] = useState({ code: "State Code" });
+  const [state, setState] = useState({ code: `console.log("Hello World!")` });
 
   const classes = useStyles();
   const [language, setLanguage] = useState("javascript");
