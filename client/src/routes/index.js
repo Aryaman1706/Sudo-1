@@ -19,6 +19,7 @@ import { Route as RRoute } from "react-router-dom";
 import Sessions from "../pages/Sessions";
 import View from "../pages/View";
 import AddQuestion from "../pages/AddQuestion";
+import CreateRoom from "../pages/CreateRoom";
 
 const Routes = () => {
   return (
@@ -65,7 +66,7 @@ const Routes = () => {
         <Route exact path="/sessions" component={Sessions} isPrivate />
         <Route exact path="/view/:id" component={View} isPrivate />
         <Route exact path="/users" component={SearchUser} isPrivate />
-
+        <Route exact path="/create-room" component={CreateRoom} isPrivate />
         <RRoute exact path="/crdt_room/:roomName" component={Monaco} />
       </Switch>
     </div>
