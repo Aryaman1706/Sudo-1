@@ -5,7 +5,9 @@ const newQuestion = (body) => {
   const schema = Joi.object({
     title: Joi.string().required(),
     markdown: Joi.string().required(),
-    tags: Joi.array().items(Joi.objectId()),
+    // tags: Joi.array().items(Joi.objectId()),
+    fileBlob: Joi.any(),
+    language: Joi.string(),
   });
   return schema.validate(body);
 };

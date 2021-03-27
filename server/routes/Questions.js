@@ -1,6 +1,13 @@
 const express = require("express");
 const isAuthenticated = require("../Middleware/isAuthenticated");
 const router = express.Router();
+const { v4: uuidv4 } = require("uuid");
+const fs = require("fs");
+const AWS = require("aws-sdk");
+const util = require("util");
+const multer = require("multer");
+
+const upload = multer({}).any();
 
 // * Models
 const Question = require("../models/Question");
@@ -16,6 +23,11 @@ const questionValidator = require("../utils/Validators/Question");
 //   });
 //   res.send(questions);
 // });
+
+const s3 = new AWS.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SECRET,
+});
 
 // * get all questions of a user
 router.get("/user", isAuthenticated, async (req, res) => {
@@ -56,18 +68,44 @@ router.get("/:id", async (req, res) => {
 });
 
 // * post new question
-router.post("/new", isAuthenticated, async (req, res) => {
-  const { value, error } = questionValidator.newQuestion(req.body);
+router.post("/new", [isAuthenticated, upload], async (req, res) => {
+  const body = { ...req.body, fileBlob: req.files };
+  const { value, error } = questionValidator.newQuestion(body);
+  console.log(body, "body");
+  let question;
   if (error)
     return res
       .status(400)
       .send({ message: error.details[0].message, error: "Invalid question" });
-  const question = new Question({
-    user: req.user._id,
-    title: value.title,
-    markdown: value.markdown,
-    tags: value.tags,
-  });
+  if (!value.fileBlob) {
+    question = new Question({
+      user: req.user._id,
+      title: value.title,
+      markdown: value.markdown,
+      // tags: value.tags,
+    });
+  } else if (value.fileBlob) {
+    const file = new File([value.fileBlob], `code-${uuidv4()}.txt`);
+    const fileContent = fs.readFileSync(file);
+    const params = {
+      Bucket: process.env.AWS_BUCKET,
+      Key: `code-${uuidv4()}.txt`, // File name you want to save as in S3
+      Body: fileContent,
+    };
+    const upload = await util.promisify(s3.upload(params));
+    console.log(upload);
+    const fileObj = {
+      url: upload.location,
+      language: req.body.language,
+    };
+    question = new Question({
+      user: req.user._id,
+      title: value.title,
+      markdown: value.markdown,
+      // tags: value.tags,
+      file: fileObj,
+    });
+  }
   await question.save();
   res.send(question);
 });
