@@ -16,10 +16,10 @@ const TerminalComponent = ({ socket }) => {
     // term.writeln("");
 
     term.onData((data) => {
-      socket.emit("set", data);
+      socket.current.emit("set", data);
     });
 
-    socket.on("get", (data) => {
+    socket.current.on("get", (data) => {
       term.write(data);
     });
 

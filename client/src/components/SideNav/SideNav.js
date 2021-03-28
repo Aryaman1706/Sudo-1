@@ -55,7 +55,7 @@ const SideNav = () => {
         <div
           className={classes.flexRow}
           onClick={() => {
-            history.push(`/create-room`);
+            history.push(`/coderoom/${uuidV4()}`);
           }}
         >
           <span>

@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PeerCodeRoom = () => {
+const PeerCodeRoom = ({ socket }) => {
   const classes = useStyles();
   const { roomId } = useParams();
   const { user } = useSelector((state) => state.auth);
@@ -45,22 +45,12 @@ const PeerCodeRoom = () => {
 
   // // -->
   // const ENDPOINT = `${process.env.REACT_APP_SOCKET_SERVER}`;
-  const ENDPOINT = "http://localhost:8080/pty";
-  const socket = useRef();
+  // const ENDPOINT = "http://localhost:8080/pty";
+  // const socket = useRef();
   const myPeer = useRef();
   useEffect(() => {
-    socket.current = io(ENDPOINT, {
-      path: `/${roomId}/`,
-    });
-    // myPeer.current = new Peer(user._id);
-
-    // myPeer.current.on("open", () => {
-    //   socket.current.emit("joinRoom", roomId, user);
-    // });
-    // socket.current.on("roomJoined", (user) => {
-    //   setConnections((prev) => {
-    //     return [...prev, user];
-    //   });
+    // socket.current = io(ENDPOINT, {
+    //   // path: `/1234/`,
     // });
   }, []);
   // -->
@@ -107,7 +97,7 @@ const PeerCodeRoom = () => {
               </Grid>
               <Grid item xs={12}>
                 {socket.current && socket.current.connected ? (
-                  <Terminal socket={socket.current} />
+                  <Terminal socket={socket} />
                 ) : null}
               </Grid>
             </Grid>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { Switch } from "react-router-dom";
 import Nav from "../components/Nav/Nav";
 import Home from "../pages/Home";
@@ -21,7 +21,18 @@ import View from "../pages/View";
 import AddQuestion from "../pages/AddQuestion";
 import CreateRoom from "../pages/CreateRoom";
 
+import io from "socket.io-client";
+
 const Routes = () => {
+  const ENDPOINT = "http://localhost:8080/pty";
+  const socket = useRef();
+
+  useEffect(() => {
+    socket.current = io(ENDPOINT, {
+      // path: `/1234/`,
+    });
+  }, []);
+
   return (
     <div>
       <Nav />
@@ -52,7 +63,8 @@ const Routes = () => {
         <Route
           exact
           path="/coderoom/:roomId"
-          component={PeerCodeRoom}
+          // component={PeerCodeRoom}
+          render={(props) => <PeerCodeRoom socket={socket} />}
           isPrivate
         />
         <Route exact path="/learningpath" component={LearningPath} isPrivate />
@@ -66,7 +78,7 @@ const Routes = () => {
         <Route exact path="/sessions" component={Sessions} isPrivate />
         <Route exact path="/view/:id" component={View} isPrivate />
         <Route exact path="/users" component={SearchUser} isPrivate />
-        <Route exact path="/create-room" component={CreateRoom} isPrivate />
+        {/* <Route exact path="/create-room" component={CreateRoom} isPrivate /> */}
         <RRoute exact path="/crdt_room/:roomName" component={Monaco} />
       </Switch>
     </div>

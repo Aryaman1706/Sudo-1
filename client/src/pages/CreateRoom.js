@@ -34,20 +34,24 @@ const CreateRoom = () => {
 
   const createRoomReq = async () => {
     roomID = uuidV4();
-    const res = await Axios.get(
-      `http://localhost:6000/create/${roomID}/?new=true`
-    );
-    setLoading(true);
-    if (res.status === 200) {
-      history.push(`/coderoom/${roomID}`);
-      setLoading(false);
+    try {
+      const res = await Axios.get(
+        `http://localhost:8000/create/${roomID}/?new=true`
+      );
+      setLoading(true);
+      if (res.status === 200) {
+        history.push(`/coderoom/${roomID}`);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
   const joinRoomReq = async () => {
     roomID = join;
     const res = await Axios.get(
-      `http://localhost:6000/create/${roomID}/?new=false`
+      `http://localhost:8000/create/${roomID}/?new=false`
     );
     setLoading2(true);
     if (res.status === 200) {
